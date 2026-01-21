@@ -115,7 +115,11 @@ body.fids {
     50% {opacity: 0;}
     100% {opacity: 1;}
   }
-  
+  .status.LANDED {
+  color: #00e676; /* hijau cerah */
+  font-weight: bold;
+}
+
   /* =========================
      RESPONSIVE (HP)
   ========================= */
@@ -234,4 +238,5 @@ body.fids {
   }
 
 }
+
   
