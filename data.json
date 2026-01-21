@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1ec62bce-8583-4e0d-93e8-783ada03436d",
+    "jenis": "keberangkatan",
+    "maskapai": "BATIK AIR (ID 6295)",
+    "kota": "MAKASSAR",
+    "jam": "18:57",
+    "status": "BOARDING"
+  },
+  {
+    "id": "6da2a459-488e-49ba-80b6-c3f92cd66d43",
+    "jenis": "kedatangan",
+    "maskapai": "BATIK AIR (ID 6292)",
+    "kota": "MAKASSAR",
+    "jam": "08:30",
+    "status": "BOARDING"
+  },
+  {
+    "id": "06810c3d-103e-4555-951f-e8c7a4399b2a",
+    "jenis": "keberangkatan",
+    "maskapai": "BATIK AIR (ID 6293)",
+    "kota": "MAKASSAR",
+    "jam": "15.05",
+    "status": "CHECK-IN"
+  },
+  {
+    "id": "49fa5542-aa74-4f48-8027-16ad038acde3",
+    "jenis": "keberangkatan",
+    "maskapai": "WINGS AIR ( IW1147 )",
+    "kota": "PALU",
+    "jam": "02:00",
+    "status": "CHECK-IN"
+  },
+  {
+    "id": "3a2b6793-eabb-4aa9-abdf-009104290ed8",
+    "jenis": "kedatangan",
+    "maskapai": "SUSI AIR ",
+    "kota": "GORONTALO",
+    "jam": "10.00",
+    "status": "DELAY"
+  },
+  {
+    "id": "3630ee56-39cf-43cc-8155-d2ffd6a1ff0d",
+    "jenis": "keberangkatan",
+    "maskapai": "SUSI AIR",
+    "kota": "GORONTALO",
+    "jam": "11.00",
+    "status": "TERJADWALKAN"
+  }
+]

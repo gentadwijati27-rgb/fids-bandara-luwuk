@@ -1,0 +1,237 @@
+/* =========================
+   GLOBAL
+========================= */
+body.fids {
+    margin: 0;
+    background: #0a5fb4;
+    font-family: "Arial Narrow", Arial, Helvetica, sans-serif;
+    color: white;
+  }
+  
+  /* =========================
+     HEADER
+  ========================= */
+  .fids-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #083f7a;
+    padding: 15px 25px;
+  }
+  
+  .fids-title {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .fids-datetime {
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  #fids-date {
+    font-size: 14px;
+  }
+  
+  #fids-clock {
+    font-size: 26px;
+  }
+  
+  /* =========================
+     CONTENT
+  ========================= */
+  .fids-content {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  /* =========================
+     PANEL
+  ========================= */
+  .fids-panel {
+    width: 50%;
+    background: #1b6ec2;
+    border-radius: 6px;
+    padding: 10px;
+  }
+  
+  .panel-title {
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+  
+  /* =========================
+     TABLE
+  ========================= */
+  .fids-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .fids-table th {
+    background: #003366;
+    padding: 10px;
+    font-weight: bold;
+  }
+  
+  .fids-table td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    vertical-align: middle;
+  }
+  
+  /* =========================
+     STATUS
+  ========================= */
+  .status {
+    font-weight: bold;
+  }
+  
+  .status.terjadwal,
+  .status.terjadwalkan {
+    color: #00ff00;
+  }
+  
+  .status.check-in {
+    color: #ffff00;
+  }
+  
+  .status.delay {
+    color: #ff4444;
+    animation: blink 1s infinite;
+  }
+  
+  /* KEDIP DELAY */
+  @keyframes blink {
+    0% {opacity: 1;}
+    50% {opacity: 0;}
+    100% {opacity: 1;}
+  }
+  
+  /* =========================
+     RESPONSIVE (HP)
+  ========================= */
+  @media (max-width: 900px) {
+    .fids-content {
+      flex-direction: column;
+    }
+  
+    .fids-panel {
+      width: 100%;
+    }
+ select {
+      padding: 2px;
+      font-size: 12px;
+    }
+    
+    button {
+      font-size: 12px;
+      cursor: pointer;
+    }
+  
+    input[type="time"] {
+      font-size: 12px;
+      padding: 2px;
+    }
+    
+    button {
+      font-size: 12px;
+      cursor: pointer;
+    }
+    select {
+      font-size: 12px;
+      padding: 2px;
+    }
+    
+    button {
+      font-size: 12px;
+      cursor: pointer;
+      margin-left: 2px;
+    }
+       
+  }
+/* =========================
+   MODE HP (RESPONSIVE FIDS)
+========================= */
+@media (max-width: 600px) {
+
+  /* HEADER */
+  .fids-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .fids-title {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .fids-datetime {
+    width: 100%;
+    text-align: left;
+    margin-top: 5px;
+  }
+
+  #fids-date {
+    font-size: 12px;
+  }
+
+  #fids-clock {
+    font-size: 18px;
+  }
+
+  /* CONTENT STACK */
+  .fids-content {
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .fids-panel {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .panel-title {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  /* TABLE */
+  .fids-table {
+    font-size: 13px;
+  }
+
+  .fids-table th {
+    font-size: 12px;
+    padding: 6px 4px;
+  }
+
+  .fids-table td {
+    padding: 6px 4px;
+    word-break: break-word;
+  }
+
+  /* KHUSUS KOLOM PENERBANGAN */
+  .fids-table td:nth-child(1) {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  /* STATUS */
+  .status {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+}
+  

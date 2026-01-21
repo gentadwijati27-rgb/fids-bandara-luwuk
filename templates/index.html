@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>FIDS Bandara Luwuk</title>
+<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="fids">
+
+<!-- HEADER FIDS -->
+<div class="fids-header">
+  <div class="fids-title">
+    ✈ UPBU SYUKURAN AMINUDDIN AMIR LUWUK
+  </div>
+  <div class="fids-datetime">
+    <div id="fids-date"></div>
+    <div id="fids-clock"></div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="fids-content">
+
+  <!-- KEBERANGKATAN -->
+  <div class="fids-panel">
+    <div class="panel-title">KEBERANGKATAN DOMESTIK</div>
+    <table class="fids-table">
+      <tr>
+        <th>PENERBANGAN</th>
+        <th>TUJUAN</th>
+        <th>JADWAL</th>
+        <th>STATUS</th>
+      </tr>
+      {% for f in keberangkatan %}
+      <tr>
+        <td>{{ f.maskapai }}</td>
+        <td>{{ f.kota }}</td>
+        <td>{{ f.jam }}</td>
+        <td class="status {{ f.status|lower }}">{{ f.status }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- KEDATANGAN -->
+  <div class="fids-panel">
+    <div class="panel-title">KEDATANGAN DOMESTIK</div>
+    <table class="fids-table">
+      <tr>
+        <th>PENERBANGAN</th>
+        <th>ASAL</th>
+        <th>JADWAL</th>
+        <th>STATUS</th>
+      </tr>
+      {% for f in kedatangan %}
+      <tr>
+        <td>{{ f.maskapai }}</td>
+        <td>{{ f.kota }}</td>
+        <td>{{ f.jam }}</td>
+        <td class="status {{ f.status|lower }}">{{ f.status }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+
+<!-- SCRIPT JAM & TANGGAL REALTIME -->
+<script>
+function updateFIDSDateTime(){
+  const now = new Date();
+
+  const tanggal = now.toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  const jam = now.toLocaleTimeString("id-ID", {
+    hour12: false
+  });
+
+  document.getElementById("fids-date").innerHTML = tanggal;
+  document.getElementById("fids-clock").innerHTML = jam + " WITA";
+}
+
+setInterval(updateFIDSDateTime, 1000);
+updateFIDSDateTime();
+</script>
+
+</body>
+</html>
