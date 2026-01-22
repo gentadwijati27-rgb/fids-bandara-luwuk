@@ -5,6 +5,9 @@ import os
 import json
 import uuid
 
+# ======================
+# APP INIT
+# ======================
 app = Flask(__name__)
 
 # ======================
@@ -29,6 +32,7 @@ CREDS = Credentials.from_service_account_info(
 
 gc = gspread.authorize(CREDS)
 
+# GANTI DENGAN ID GOOGLE SHEET KAMU
 SHEET_ID = "1IhMywVAdRc7LfNMjspIYWKSwgAZ9-0RqLJWrT8zHqr8"
 sheet = gc.open_by_key(SHEET_ID).sheet1
 
@@ -51,12 +55,12 @@ def save_data(data):
         sheet.append_row(["id", "jenis", "maskapai", "kota", "jam", "status"])
         for d in data:
             sheet.append_row([
-                d.get("id",""),
-                d.get("jenis",""),
-                d.get("maskapai",""),
-                d.get("kota",""),
-                d.get("jam",""),
-                d.get("status","")
+                d.get("id", ""),
+                d.get("jenis", ""),
+                d.get("maskapai", ""),
+                d.get("kota", ""),
+                d.get("jam", ""),
+                d.get("status", "")
             ])
     except Exception as e:
         print("ERROR SAVE DATA:", e)
@@ -66,6 +70,7 @@ def save_data(data):
 # ======================
 @app.route("/", methods=["GET", "HEAD"])
 def index():
+    # Penting untuk Render (health check)
     if request.method == "HEAD":
         return "", 200
 
@@ -104,7 +109,8 @@ def add():
         "jenis": request.form["jenis"],
         "maskapai": request.form["maskapai"],
         "kota": request.form["kota"],
-        "jam": request.form["jam"],
+        # JAM 24 JAM (00–23) + MENIT (00–59)
+        "jam": f"{request.form['jam']}:{request.form['menit']}",
         "status": request.form["status"]
     })
     save_data(data)
@@ -137,5 +143,8 @@ def update_jam():
     save_data(data)
     return redirect("/admin")
 
+# ======================
+# RUN LOCAL (AMAN UNTUK RENDER)
+# ======================
 if __name__ == "__main__":
     app.run()
