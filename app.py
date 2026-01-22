@@ -1,20 +1,15 @@
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, redirect
 import gspread
 from google.oauth2.service_account import Credentials
 import os
 import json
+import uuid
 
-# WAJIB ADA DI ATAS
 app = Flask(__name__)
 
 # ======================
 # GOOGLE SHEET SETUP
 # ======================
-import os
-import json
-import gspread
-from google.oauth2.service_account import Credentials
-
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
@@ -37,22 +32,56 @@ gc = gspread.authorize(CREDS)
 SHEET_ID = "1IhMywVAdRc7LfNMjspIYWKSwgAZ9-0RqLJWrT8zHqr8"
 sheet = gc.open_by_key(SHEET_ID).sheet1
 
+# ======================
+# DATA HANDLER (AMAN)
+# ======================
+def load_data():
+    try:
+        records = sheet.get_all_records()
+        if not isinstance(records, list):
+            return []
+        return records
+    except Exception as e:
+        print("ERROR LOAD DATA:", e)
+        return []
 
-
+def save_data(data):
+    try:
+        sheet.clear()
+        sheet.append_row(["id", "jenis", "maskapai", "kota", "jam", "status"])
+        for d in data:
+            sheet.append_row([
+                d.get("id",""),
+                d.get("jenis",""),
+                d.get("maskapai",""),
+                d.get("kota",""),
+                d.get("jam",""),
+                d.get("status","")
+            ])
+    except Exception as e:
+        print("ERROR SAVE DATA:", e)
 
 # ======================
 # HALAMAN UTAMA (FIDS)
 # ======================
-@app.route("/")
+@app.route("/", methods=["GET", "HEAD"])
 def index():
+    if request.method == "HEAD":
+        return "", 200
+
     data = load_data()
-    print("ISI DATA.JSON:", data)
 
-    keberangkatan = [d for d in data if d.get("jenis") == "keberangkatan"]
-    kedatangan = [d for d in data if d.get("jenis") == "kedatangan"]
+    keberangkatan = []
+    kedatangan = []
 
-    print("KEBERANGKATAN:", keberangkatan)
-    print("KEDATANGAN:", kedatangan)
+    for d in data:
+        if not isinstance(d, dict):
+            continue
+        jenis = d.get("jenis", "").strip().lower()
+        if jenis == "keberangkatan":
+            keberangkatan.append(d)
+        elif jenis == "kedatangan":
+            kedatangan.append(d)
 
     return render_template(
         "index.html",
@@ -83,53 +112,30 @@ def add():
 
 @app.route("/delete/<id>")
 def delete(id):
-    data = [d for d in load_data() if d["id"] != id]
+    data = [d for d in load_data() if d.get("id") != id]
     save_data(data)
     return redirect("/admin")
 
 @app.route("/update_status", methods=["POST"])
 def update_status():
-    id_flight = request.form["id"]
-    status_baru = request.form["status"]
-
     data = load_data()
     for d in data:
-        if d["id"] == id_flight:
-            d["status"] = status_baru
+        if d.get("id") == request.form["id"]:
+            d["status"] = request.form["status"]
             break
-
     save_data(data)
     return redirect("/admin")
 
 @app.route("/update_jam", methods=["POST"])
 def update_jam():
-    id_flight = request.form["id"]
-    jam = request.form["jam_jam"]
-    menit = request.form["jam_menit"]
-
-    jam_baru = f"{jam}:{menit}"
-
+    jam_baru = f"{request.form['jam_jam']}:{request.form['jam_menit']}"
     data = load_data()
     for d in data:
-        if d["id"] == id_flight:
+        if d.get("id") == request.form["id"]:
             d["jam"] = jam_baru
             break
-
     save_data(data)
     return redirect("/admin")
 
-# ======================
-# JALANKAN SERVER
-# ======================
 if __name__ == "__main__":
     app.run()
-
-print("ENV GOOGLE_CREDENTIALS_JSON:", bool(os.environ.get("GOOGLE_CREDENTIALS_JSON")))
-
-
-
-
-
-
-
-
