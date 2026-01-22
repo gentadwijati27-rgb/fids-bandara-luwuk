@@ -1,20 +1,45 @@
 from flask import Flask, render_template, request, jsonify, redirect
-import json
-import uuid
+import gspread
+from google.oauth2.service_account import Credentials
 
 # WAJIB ADA DI ATAS
 app = Flask(__name__)
 
 # ======================
-# DATA HANDLER
+# GOOGLE SHEET SETUP
 # ======================
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
+
+CREDS = Credentials.from_service_account_file(
+    "credentials.json",
+    scopes=SCOPE
+)
+
+gc = gspread.authorize(CREDS)
+SHEET_ID = "PASTE_ID_SHEET_KAMU_DI_SINI"
+sheet = gc.open_by_key(SHEET_ID).sheet1
+
+
 def load_data():
-    with open("data.json", "r") as f:
-        return json.load(f)
+    records = sheet.get_all_records()
+    return records
+
 
 def save_data(data):
-    with open("data.json", "w") as f:
-        json.dump(data, f, indent=2)
+    sheet.clear()
+    sheet.append_row(["id", "jenis", "maskapai", "kota", "jam", "status"])
+    for d in data:
+        sheet.append_row([
+            d["id"],
+            d["jenis"],
+            d["maskapai"],
+            d["kota"],
+            d["jam"],
+            d["status"]
+        ])
 
 # ======================
 # HALAMAN UTAMA (FIDS)
@@ -98,6 +123,7 @@ def update_jam():
 # ======================
 if __name__ == "__main__":
     app.run()
+
 
 
 
