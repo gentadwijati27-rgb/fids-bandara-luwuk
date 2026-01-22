@@ -59,6 +59,7 @@ def index():
         keberangkatan=keberangkatan,
         kedatangan=kedatangan
     )
+
 # ======================
 # ADMIN
 # ======================
@@ -124,6 +125,7 @@ if __name__ == "__main__":
     app.run()
 
 print("ENV GOOGLE_CREDENTIALS_JSON:", bool(os.environ.get("GOOGLE_CREDENTIALS_JSON")))
+
 
 
 
