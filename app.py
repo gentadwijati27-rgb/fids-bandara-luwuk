@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify, redirect
 import gspread
 from google.oauth2.service_account import Credentials
+import os
+import json
 
 # WAJIB ADA DI ATAS
 app = Flask(__name__)
@@ -8,38 +10,33 @@ app = Flask(__name__)
 # ======================
 # GOOGLE SHEET SETUP
 # ======================
+import os
+import json
+import gspread
+from google.oauth2.service_account import Credentials
+
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
-CREDS = Credentials.from_service_account_file(
-    "credentials.json",
+creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+
+if not creds_json:
+    raise Exception("GOOGLE_CREDENTIALS_JSON environment variable not set")
+
+creds_dict = json.loads(creds_json)
+
+CREDS = Credentials.from_service_account_info(
+    creds_dict,
     scopes=SCOPE
 )
 
 gc = gspread.authorize(CREDS)
+
 SHEET_ID = "PASTE_ID_SHEET_KAMU_DI_SINI"
 sheet = gc.open_by_key(SHEET_ID).sheet1
 
-
-def load_data():
-    records = sheet.get_all_records()
-    return records
-
-
-def save_data(data):
-    sheet.clear()
-    sheet.append_row(["id", "jenis", "maskapai", "kota", "jam", "status"])
-    for d in data:
-        sheet.append_row([
-            d["id"],
-            d["jenis"],
-            d["maskapai"],
-            d["kota"],
-            d["jam"],
-            d["status"]
-        ])
 
 # ======================
 # HALAMAN UTAMA (FIDS)
@@ -123,6 +120,7 @@ def update_jam():
 # ======================
 if __name__ == "__main__":
     app.run()
+
 
 
 
