@@ -9,7 +9,6 @@
 
 <body class="fids">
 
-<!-- HEADER FIDS -->
 <div class="fids-header">
   <div class="fids-title">
     ✈ UPBU SYUKURAN AMINUDDIN AMIR LUWUK
@@ -20,10 +19,8 @@
   </div>
 </div>
 
-<!-- CONTENT -->
 <div class="fids-content">
 
-  <!-- KEBERANGKATAN -->
   <div class="fids-panel">
     <div class="panel-title">KEBERANGKATAN DOMESTIK</div>
     <table class="fids-table">
@@ -35,16 +32,17 @@
       </tr>
       {% for f in keberangkatan %}
       <tr>
-        <td>{{ f.maskapai }}</td>
-        <td>{{ f.kota }}</td>
-        <td>{{ f.jam }}</td>
-        <td class="status {{ f.status|lower }}">{{ f.status }}</td>
+        <td>{{ f.get("maskapai","-") }}</td>
+        <td>{{ f.get("kota","-") }}</td>
+        <td>{{ f.get("jam","-") }}</td>
+        <td class="status {{ f.get("status","").lower() }}">
+          {{ f.get("status","-") }}
+        </td>
       </tr>
       {% endfor %}
     </table>
   </div>
 
-  <!-- KEDATANGAN -->
   <div class="fids-panel">
     <div class="panel-title">KEDATANGAN DOMESTIK</div>
     <table class="fids-table">
@@ -56,10 +54,12 @@
       </tr>
       {% for f in kedatangan %}
       <tr>
-        <td>{{ f.maskapai }}</td>
-        <td>{{ f.kota }}</td>
-        <td>{{ f.jam }}</td>
-        <td class="status {{ f.status|lower }}">{{ f.status }}</td>
+        <td>{{ f.get("maskapai","-") }}</td>
+        <td>{{ f.get("kota","-") }}</td>
+        <td>{{ f.get("jam","-") }}</td>
+        <td class="status {{ f.get("status","").lower() }}">
+          {{ f.get("status","-") }}
+        </td>
       </tr>
       {% endfor %}
     </table>
@@ -67,26 +67,19 @@
 
 </div>
 
-<!-- SCRIPT JAM & TANGGAL REALTIME -->
 <script>
 function updateFIDSDateTime(){
   const now = new Date();
-
   const tanggal = now.toLocaleDateString("id-ID", {
     weekday: "long",
     day: "2-digit",
     month: "long",
     year: "numeric"
   });
-
-  const jam = now.toLocaleTimeString("id-ID", {
-    hour12: false
-  });
-
+  const jam = now.toLocaleTimeString("id-ID", { hour12: false });
   document.getElementById("fids-date").innerHTML = tanggal;
   document.getElementById("fids-clock").innerHTML = jam + " WITA";
 }
-
 setInterval(updateFIDSDateTime, 1000);
 updateFIDSDateTime();
 </script>
