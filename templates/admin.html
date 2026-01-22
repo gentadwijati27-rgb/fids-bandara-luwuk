@@ -21,7 +21,19 @@
 
   <input type="text" name="maskapai" placeholder="Maskapai" required>
   <input type="text" name="kota" placeholder="Kota" required>
-  <input type="time" name="jam" required>
+
+  <!-- JAM 24 JAM (AMAN, TANPA AM/PM) -->
+  <select name="jam" required>
+    {% for j in range(0,24) %}
+    <option value="{{ "%02d"|format(j) }}">{{ "%02d"|format(j) }}</option>
+    {% endfor %}
+  </select>
+  :
+  <select name="menit" required>
+    {% for m in range(0,60) %}
+    <option value="{{ "%02d"|format(m) }}">{{ "%02d"|format(m) }}</option>
+    {% endfor %}
+  </select>
 
   <select name="status">
     <option value="TERJADWALKAN">TERJADWALKAN</option>
@@ -79,14 +91,16 @@
           {{ "%02d"|format(j) }}
         </option>
         {% endfor %}
-      </select> :
+      </select>
+      :
       <select name="jam_menit">
-        {% for m in ["00","15","30","45"] %}
-        <option value="{{ m }}" {% if jam|length>1 and jam[1]==m %}selected{% endif %}>
-          {{ m }}
+        {% for m in range(0,60) %}
+        <option value="{{ "%02d"|format(m) }}" {% if jam|length>1 and jam[1]==("%02d"|format(m)) %}selected{% endif %}>
+          {{ "%02d"|format(m) }}
         </option>
         {% endfor %}
       </select>
+
       <button type="submit">✔</button>
     </form>
 
