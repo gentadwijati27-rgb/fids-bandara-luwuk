@@ -34,8 +34,10 @@ CREDS = Credentials.from_service_account_info(
 
 gc = gspread.authorize(CREDS)
 
-SHEET_ID = "PASTE_ID_SHEET_KAMU_DI_SINI"
+SHEET_ID = "1IhMywVAdRc7LfNMjspIYWKSwgAZ9-0RqLJWrT8zHqr8"
 sheet = gc.open_by_key(SHEET_ID).sheet1
+
+
 
 
 # ======================
@@ -120,6 +122,7 @@ def update_jam():
 # ======================
 if __name__ == "__main__":
     app.run()
+
 
 
 
