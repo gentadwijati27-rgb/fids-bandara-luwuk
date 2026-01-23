@@ -121,17 +121,20 @@ def add():
     if not login_required():
         return redirect("/login")
 
+    jam_baru = f"{request.form['jam']}:{request.form['menit']}"
+
     data = load_data()
     data.append({
         "id": str(uuid.uuid4()),
         "jenis": request.form["jenis"],
         "maskapai": request.form["maskapai"],
         "kota": request.form["kota"],
-        "jam": request.form["jam"],
+        "jam": jam_baru,
         "status": request.form["status"]
     })
     save_data(data)
     return redirect("/admin")
+
 
 @app.route("/delete/<id>")
 def delete(id):
@@ -171,3 +174,4 @@ def update_jam():
 
 if __name__ == "__main__":
     app.run()
+
