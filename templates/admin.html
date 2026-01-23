@@ -36,13 +36,40 @@
   </select>
 
   <select name="status">
-    <option value="TERJADWALKAN">TERJADWALKAN</option>
-    <option value="CHECK-IN">CHECK-IN</option>
-    <option value="BOARDING">BOARDING</option>
-    <option value="DELAY">DELAY</option>
-    <option value="LANDED">LANDED</option>
-    <option value="CANCEL">CANCEL</option>
-  </select>
+  <option value="TERJADWALKAN">TERJADWALKAN</option>
+  <option value="ON TIME">ON TIME</option>
+  <option value="EARLY">EARLY</option>
+
+  <option value="CHECK-IN">CHECK-IN</option>
+  <option value="BAGGAGE DROP">BAGGAGE DROP</option>
+  <option value="SECURITY CHECK">SECURITY CHECK</option>
+  <option value="FINAL CALL">FINAL CALL</option>
+  <option value="GATE OPEN">GATE OPEN</option>
+  <option value="GATE CLOSED">GATE CLOSED</option>
+  <option value="BOARDING">BOARDING</option>
+  <option value="LAST CALL">LAST CALL</option>
+
+  <option value="DEPARTED">DEPARTED</option>
+  <option value="AIRBORNE">AIRBORNE</option>
+
+  <option value="DELAY">DELAY</option>
+  <option value="RESCHEDULED">RESCHEDULED</option>
+  <option value="DIVERTED">DIVERTED</option>
+  <option value="RETURN TO GATE">RETURN TO GATE</option>
+
+  <option value="LANDED">LANDED</option>
+  <option value="ARRIVED">ARRIVED</option>
+  <option value="AT GATE">AT GATE</option>
+  <option value="BAGGAGE CLAIM">BAGGAGE CLAIM</option>
+  <option value="CUSTOMS">CUSTOMS</option>
+  <option value="COMPLETED">COMPLETED</option>
+
+  <option value="CANCEL">CANCEL</option>
+  <option value="CANCELLED DUE TO WEATHER">CANCELLED DUE TO WEATHER</option>
+  <option value="CANCELLED TECHNICAL">CANCELLED TECHNICAL</option>
+  <option value="EMERGENCY">EMERGENCY</option>
+</select>
+
 
   <button type="submit">Tambah Jadwal</button>
 </form>
@@ -73,7 +100,16 @@
     <form method="POST" action="/update_status" style="display:inline;">
       <input type="hidden" name="id" value="{{ f.get('id') }}">
       <select name="status" onchange="this.form.submit()">
-        {% for s in ["TERJADWALKAN","CHECK-IN","BOARDING","DELAY","LANDED","CANCEL"] %}
+        {% for s in [
+          "TERJADWALKAN","ON TIME","EARLY",
+          "CHECK-IN","BAGGAGE DROP","SECURITY CHECK","FINAL CALL",
+          "GATE OPEN","GATE CLOSED","BOARDING","LAST CALL",
+          "DEPARTED","AIRBORNE",
+          "DELAY","RESCHEDULED","DIVERTED","RETURN TO GATE",
+          "LANDED","ARRIVED","AT GATE","BAGGAGE CLAIM","CUSTOMS","COMPLETED",
+          "CANCEL","CANCELLED DUE TO WEATHER","CANCELLED TECHNICAL","EMERGENCY"
+        ] %}
+
         <option value="{{ s }}" {% if f.get("status")==s %}selected{% endif %}>
           {{ s }}
         </option>
@@ -114,3 +150,4 @@
 
 </body>
 </html>
+
