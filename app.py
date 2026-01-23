@@ -1,14 +1,16 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import gspread
 from google.oauth2.service_account import Credentials
-import os
-import json
-import uuid
+import os, json, uuid
+
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "default_secret")
 
 # ======================
-# APP INIT
+# LOGIN CONFIG
 # ======================
-app = Flask(__name__)
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 # ======================
 # GOOGLE SHEET SETUP
@@ -19,73 +21,84 @@ SCOPE = [
 ]
 
 creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
-
 if not creds_json:
     raise Exception("GOOGLE_CREDENTIALS_JSON environment variable not set")
 
-creds_dict = json.loads(creds_json)
-
 CREDS = Credentials.from_service_account_info(
-    creds_dict,
+    json.loads(creds_json),
     scopes=SCOPE
 )
 
 gc = gspread.authorize(CREDS)
-
-# GANTI DENGAN ID GOOGLE SHEET KAMU
 SHEET_ID = "1IhMywVAdRc7LfNMjspIYWKSwgAZ9-0RqLJWrT8zHqr8"
 sheet = gc.open_by_key(SHEET_ID).sheet1
 
 # ======================
-# DATA HANDLER (AMAN)
+# DATA HANDLER
 # ======================
 def load_data():
     try:
-        records = sheet.get_all_records()
-        if not isinstance(records, list):
-            return []
-        return records
-    except Exception as e:
-        print("ERROR LOAD DATA:", e)
+        return sheet.get_all_records()
+    except:
         return []
 
 def save_data(data):
-    try:
-        sheet.clear()
-        sheet.append_row(["id", "jenis", "maskapai", "kota", "jam", "status"])
-        for d in data:
-            sheet.append_row([
-                d.get("id", ""),
-                d.get("jenis", ""),
-                d.get("maskapai", ""),
-                d.get("kota", ""),
-                d.get("jam", ""),
-                d.get("status", "")
-            ])
-    except Exception as e:
-        print("ERROR SAVE DATA:", e)
+    sheet.clear()
+    sheet.append_row(["id","jenis","maskapai","kota","jam","status"])
+    for d in data:
+        sheet.append_row([
+            d.get("id",""),
+            d.get("jenis",""),
+            d.get("maskapai",""),
+            d.get("kota",""),
+            d.get("jam",""),
+            d.get("status","")
+        ])
 
 # ======================
-# HALAMAN UTAMA (FIDS)
+# AUTH GUARD
 # ======================
-@app.route("/", methods=["GET", "HEAD"])
+def login_required():
+    return session.get("admin_logged_in") is True
+
+# ======================
+# LOGIN
+# ======================
+@app.route("/login", methods=["GET","POST"])
+def login():
+    error = ""
+    if request.method == "POST":
+        if (
+            request.form["username"] == ADMIN_USERNAME and
+            request.form["password"] == ADMIN_PASSWORD
+        ):
+            session["admin_logged_in"] = True
+            return redirect("/admin")
+        else:
+            error = "Username atau password salah"
+    return render_template("login.html", error=error)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+# ======================
+# FIDS
+# ======================
+@app.route("/", methods=["GET","HEAD"])
 def index():
-    # Penting untuk Render (health check)
     if request.method == "HEAD":
         return "", 200
 
     data = load_data()
-
     keberangkatan = []
     kedatangan = []
 
     for d in data:
-        if not isinstance(d, dict):
-            continue
-        jenis = d.get("jenis", "").strip().lower()
-        if jenis == "keberangkatan":
+        if d.get("jenis","").lower() == "keberangkatan":
             keberangkatan.append(d)
-        elif jenis == "kedatangan":
+        elif d.get("jenis","").lower() == "kedatangan":
             kedatangan.append(d)
 
     return render_template(
@@ -95,22 +108,26 @@ def index():
     )
 
 # ======================
-# ADMIN
+# ADMIN (PROTECTED)
 # ======================
 @app.route("/admin")
 def admin():
+    if not login_required():
+        return redirect("/login")
     return render_template("admin.html", flights=load_data())
 
 @app.route("/add", methods=["POST"])
 def add():
+    if not login_required():
+        return redirect("/login")
+
     data = load_data()
     data.append({
         "id": str(uuid.uuid4()),
         "jenis": request.form["jenis"],
         "maskapai": request.form["maskapai"],
         "kota": request.form["kota"],
-        # JAM 24 JAM (00–23) + MENIT (00–59)
-        "jam": f"{request.form['jam']}:{request.form['menit']}",
+        "jam": request.form["jam"],
         "status": request.form["status"]
     })
     save_data(data)
@@ -118,12 +135,18 @@ def add():
 
 @app.route("/delete/<id>")
 def delete(id):
+    if not login_required():
+        return redirect("/login")
+
     data = [d for d in load_data() if d.get("id") != id]
     save_data(data)
     return redirect("/admin")
 
 @app.route("/update_status", methods=["POST"])
 def update_status():
+    if not login_required():
+        return redirect("/login")
+
     data = load_data()
     for d in data:
         if d.get("id") == request.form["id"]:
@@ -134,6 +157,9 @@ def update_status():
 
 @app.route("/update_jam", methods=["POST"])
 def update_jam():
+    if not login_required():
+        return redirect("/login")
+
     jam_baru = f"{request.form['jam_jam']}:{request.form['jam_menit']}"
     data = load_data()
     for d in data:
@@ -143,8 +169,5 @@ def update_jam():
     save_data(data)
     return redirect("/admin")
 
-# ======================
-# RUN LOCAL (AMAN UNTUK RENDER)
-# ======================
 if __name__ == "__main__":
     app.run()
